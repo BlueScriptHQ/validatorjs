@@ -5,7 +5,7 @@ var validations = [
       if(s.length === 0){
         return "Nou neee....";
       } else {
-        return "ok";
+        return true;
       }
     }
  },
@@ -13,7 +13,7 @@ var validations = [
  {
     tag: "v_password",
     fn: function(s){
-			
+			return s.length;
     }
  }
 ];
@@ -25,11 +25,15 @@ var validator = (function(){
   var prefix = "v_";
 
   function validate(form){
+   
+    var valid = false;
+  
     // loop over each element in the form
   	$(form).find("input, textarea").each(function(){
       // look for validate classes
       var classList = $(this).attr('class');
       var val = $(this).val();
+
       
       // check if element has a class, else stop
       if(classList !== undefined){
@@ -43,9 +47,10 @@ var validator = (function(){
           $.each(fns, function(key, value){
             if(value.tag === className){
               var result = value.fn(val);
-              alert(result);
-              if(result === false){
-                
+              if(result !== true){
+                valid = result;
+              } else {
+                valid = true;
               }
             }
           });
@@ -53,6 +58,8 @@ var validator = (function(){
       });
       
     });
+    
+    console.log(valid);
   }
 
  return {
@@ -60,4 +67,6 @@ var validator = (function(){
  }
 })();
 
-validator.validate($("form"));
+$("input[type=button]").on("click", function(){
+  validator.validate($("form"));
+});
